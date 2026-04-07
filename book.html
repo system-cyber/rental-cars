@@ -35,45 +35,52 @@
     <main class="fleet-page-container">
         <div class="booking-form-container fade-in">
             <form id="bookingForm">
-                <div class="form-group">
-                    <label for="b_name">Name</label>
-                    <input type="text" id="b_name" required placeholder="Enter your full name">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="b_name">Full Name</label>
+                        <input type="text" id="b_name" required placeholder="e.g. John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="b_mobile">Mobile Number</label>
+                        <input type="tel" id="b_mobile" required placeholder="e.g. 9876543210">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="b_email">Email Address</label>
+                        <input type="email" id="b_email" required placeholder="e.g. john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="b_requirement">Select Vehicle</label>
+                        <select id="b_requirement" required>
+                            <option value="" disabled selected>Choose a ride...</option>
+                            <option value="Toyota Innova Type 4">Toyota Innova</option>
+                            <option value="Maruti Suzuki Baleno">Maruti Suzuki Baleno</option>
+                            <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
+                            <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
+                            <option value="Other">Other Requirement</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="b_pickup">Pickup Date</label>
+                        <input type="date" id="b_pickup" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="b_return">Return Date</label>
+                        <input type="date" id="b_return" required>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="b_mobile">Mobile Number</label>
-                    <input type="tel" id="b_mobile" required placeholder="Enter your 10-digit mobile number">
-                </div>
-
-                <div class="form-group">
-                    <label for="b_email">Email ID</label>
-                    <input type="email" id="b_email" required placeholder="Enter your email address">
-                </div>
-
-                <div class="form-group">
-                    <label for="b_requirement">Requirement (Which Car?)</label>
-                    <select id="b_requirement" required>
-                        <option value="" disabled selected>Select a vehicle</option>
-                        <option value="Toyota Innova Type 4">Toyota Innova</option>
-                        <option value="Maruti Suzuki Baleno">Maruti Suzuki Baleno</option>
-                        <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
-                        <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
-                        <option value="Other">Other Requirement</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="b_date">Pickup Date</label>
-                    <input type="date" id="b_date" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="b_days">How Many Days?</label>
+                    <label for="b_days">Number of Days</label>
                     <input type="number" id="b_days" min="1" required placeholder="e.g. 3">
                 </div>
 
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px; padding: 15px;">Confirm
-                    Booking Inquiry</button>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px; padding: 16px; font-size: 1.1rem; border-radius: 12px;">Confirm Booking Inquiry</button>
                 <div id="bookingPopup" class="popup-message">We will contact soon. Thanks for your contact!</div>
             </form>
         </div>
@@ -88,8 +95,8 @@
             </div>
             <div class="footer-contact">
                 <h3>Contact Us</h3>
-                <p>📞 +91 98765 43210</p>
-                <p>✉️ pablo@pabloscarrentals.com</p>
+                <p>📞 +91 7025328233</p>
+                <p>✉️ pablo@pgmail.com</p>
                 <p>📍 Kerala, India</p>
             </div>
             <div class="footer-links">
@@ -114,6 +121,30 @@
 
     <script src="script.js"></script>
     <script>
+        // Auto-calculate days based on pickup and return dates
+        function calculateDays() {
+            const start = document.getElementById('b_pickup').value;
+            const end = document.getElementById('b_return').value;
+            if(start && end) {
+                const startDate = new Date(start);
+                const endDate = new Date(end);
+                const diffTime = endDate - startDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays > 0) {
+                    document.getElementById('b_days').value = diffDays;
+                } else if (diffDays === 0) {
+                    // If pickup and return are the same day, we count it as 1 day.
+                    document.getElementById('b_days').value = 1;
+                } else {
+                    document.getElementById('b_days').value = '';
+                }
+            }
+        }
+
+        document.getElementById('b_pickup').addEventListener('change', calculateDays);
+        document.getElementById('b_return').addEventListener('change', calculateDays);
+
         document.getElementById('bookingForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -122,14 +153,14 @@
             const mobile = document.getElementById('b_mobile').value;
             const email = document.getElementById('b_email').value;
             const requirement = document.getElementById('b_requirement').value;
-            const date = document.getElementById('b_date').value;
+            const pickupDate = document.getElementById('b_pickup').value;
+            const returnDate = document.getElementById('b_return').value;
             const days = document.getElementById('b_days').value;
 
             // 2. Format the WhatsApp message exactly how you want to read it
-            const message = `*New Booking Inquiry!* 🚗%0A%0A*Name:* ${name}%0A*Mobile:* ${mobile}%0A*Email:* ${email}%0A*Vehicle Needed:* ${requirement}%0A*Pickup Date:* ${date}%0A*Number of Days:* ${days}%0A%0APlease let me know the availability and pricing.`;
+            const message = `*New Booking Inquiry!* 🚗%0A%0A*Name:* ${name}%0A*Mobile:* ${mobile}%0A*Email:* ${email}%0A*Vehicle Needed:* ${requirement}%0A*Pickup Date:* ${pickupDate}%0A*Return Date:* ${returnDate}%0A*Number of Days:* ${days}%0A%0APlease let me know the availability and pricing.`;
 
             // 3. Define the receiving WhatsApp number! (Must include country code, no + or spaces)
-            // CHANGE THIS TO YOUR ACTUAL WHATSAPP NUMBER! example: 919876543210
             const whatsappNumber = "917025328233";
 
             // 4. Create the final WhatsApp URL
@@ -143,9 +174,6 @@
             // ============================================
             // 5. SEND EMAIL IN BACKGROUND (via Web3Forms)
             // ============================================
-            // STEP 1: Go to https://web3forms.com/
-            // STEP 2: Enter your email to get a free Access Key
-            // STEP 3: Replace "YOUR_ACCESS_KEY_HERE" below with the key they email you
             const web3formsAccessKey = "YOUR_ACCESS_KEY_HERE";
 
             if (web3formsAccessKey !== "YOUR_ACCESS_KEY_HERE") {
@@ -163,7 +191,8 @@
                         Mobile: mobile,
                         Email: email,
                         Vehicle_Needed: requirement,
-                        Pickup_Date: date,
+                        Pickup_Date: pickupDate,
+                        Return_Date: returnDate,
                         Number_of_Days: days
                     })
                 }).then(res => console.log("Email form submitted successfully"))
@@ -176,7 +205,7 @@
             // Reset form after a few seconds
             setTimeout(() => {
                 popup.style.display = 'none';
-                e.target.reset(); // use e.target instead of this for arrow-function safety if modified
+                e.target.reset();
             }, 3000);
         });
     </script>
