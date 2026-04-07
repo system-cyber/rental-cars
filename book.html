@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Car | Pablo's Car Rentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Pablo's Car Rentals</div>
+        <ul class="nav-links">
+            <li><a href="index.html#home">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#services">Services</a></li>
+            <li><a href="fleet.html">Our Fleet</a></li>
+            <li><a href="book.html" class="btn-primary">Book Now</a></li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <header class="page-header slide-up">
+        <h1>Book Your Ride</h1>
+        <p>Fill out the details below and we will confirm your booking shortly.</p>
+    </header>
+
+    <main class="fleet-page-container">
+        <div class="booking-form-container fade-in">
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="b_name">Name</label>
+                    <input type="text" id="b_name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="b_mobile">Mobile Number</label>
+                    <input type="tel" id="b_mobile" required placeholder="Enter your 10-digit mobile number">
+                </div>
+
+                <div class="form-group">
+                    <label for="b_email">Email ID</label>
+                    <input type="email" id="b_email" required placeholder="Enter your email address">
+                </div>
+
+                <div class="form-group">
+                    <label for="b_requirement">Requirement (Which Car?)</label>
+                    <select id="b_requirement" required>
+                        <option value="" disabled selected>Select a vehicle</option>
+                        <option value="Toyota Innova Type 4">Toyota Innova Type 4</option>
+                        <option value="Maruti Suzuki Baleno">Maruti Suzuki Baleno</option>
+                        <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
+                        <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
+                        <option value="Other">Other Requirement</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="b_date">Pickup Date</label>
+                    <input type="date" id="b_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="b_days">How Many Days?</label>
+                    <input type="number" id="b_days" min="1" required placeholder="e.g. 3">
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px; padding: 15px;">Confirm Booking Inquiry</button>
+                <div id="bookingPopup" class="popup-message">We will contact soon. Thanks for your contact!</div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h2>Pablo's Car Rentals</h2>
+                <p>Premium self-drive taxis and private cars in Kerala.</p>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <p>📞 +91 98765 43210</p>
+                <p>✉️ noel@noelscarrentals.com</p>
+                <p>📍 Kerala, India</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html#home">Home</a>
+                <a href="index.html#about">About</a>
+                <a href="index.html#services">Services</a>
+                <a href="fleet.html">Our Fleet</a>
+            </div>
+            <div class="footer-links">
+                <h3>Follow Us</h3>
+                <a href="#" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/pablo__rentals?igsh=MXhubjdkemdoYXdlMw%3D%3D&utm_source=qr"
+                    target="_blank">Instagram</a>
+                <a href="#" target="_blank">Twitter</a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; <span id="year"></span> Noel Padayatti. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const popup = document.getElementById('bookingPopup');
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.style.display = 'none';
+                this.reset();
+            }, 4000);
+        });
+    </script>
+</body>
+
+</html>
