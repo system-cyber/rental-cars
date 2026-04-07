@@ -39,7 +39,7 @@
                     <label for="b_name">Name</label>
                     <input type="text" id="b_name" required placeholder="Enter your full name">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="b_mobile">Mobile Number</label>
                     <input type="tel" id="b_mobile" required placeholder="Enter your 10-digit mobile number">
@@ -54,7 +54,7 @@
                     <label for="b_requirement">Requirement (Which Car?)</label>
                     <select id="b_requirement" required>
                         <option value="" disabled selected>Select a vehicle</option>
-                        <option value="Toyota Innova Type 4">Toyota Innova Type 4</option>
+                        <option value="Toyota Innova Type 4">Toyota Innova</option>
                         <option value="Maruti Suzuki Baleno">Maruti Suzuki Baleno</option>
                         <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
                         <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
@@ -72,7 +72,8 @@
                     <input type="number" id="b_days" min="1" required placeholder="e.g. 3">
                 </div>
 
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px; padding: 15px;">Confirm Booking Inquiry</button>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px; padding: 15px;">Confirm
+                    Booking Inquiry</button>
                 <div id="bookingPopup" class="popup-message">We will contact soon. Thanks for your contact!</div>
             </form>
         </div>
@@ -88,7 +89,7 @@
             <div class="footer-contact">
                 <h3>Contact Us</h3>
                 <p>📞 +91 98765 43210</p>
-                <p>✉️ noel@noelscarrentals.com</p>
+                <p>✉️ pablo@pabloscarrentals.com</p>
                 <p>📍 Kerala, India</p>
             </div>
             <div class="footer-links">
@@ -107,20 +108,76 @@
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; <span id="year"></span> Noel Padayatti. All Rights Reserved.</p>
+            <p>&copy; <span id="year"></span> Pablo. All Rights Reserved.</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
     <script>
-        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        document.getElementById('bookingForm').addEventListener('submit', function (e) {
             e.preventDefault();
+
+            // 1. Get all form values
+            const name = document.getElementById('b_name').value;
+            const mobile = document.getElementById('b_mobile').value;
+            const email = document.getElementById('b_email').value;
+            const requirement = document.getElementById('b_requirement').value;
+            const date = document.getElementById('b_date').value;
+            const days = document.getElementById('b_days').value;
+
+            // 2. Format the WhatsApp message exactly how you want to read it
+            const message = `*New Booking Inquiry!* 🚗%0A%0A*Name:* ${name}%0A*Mobile:* ${mobile}%0A*Email:* ${email}%0A*Vehicle Needed:* ${requirement}%0A*Pickup Date:* ${date}%0A*Number of Days:* ${days}%0A%0APlease let me know the availability and pricing.`;
+
+            // 3. Define the receiving WhatsApp number! (Must include country code, no + or spaces)
+            // CHANGE THIS TO YOUR ACTUAL WHATSAPP NUMBER! example: 919876543210
+            const whatsappNumber = "917025328233";
+
+            // 4. Create the final WhatsApp URL
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+            // Show a quick success popup before redirecting
             const popup = document.getElementById('bookingPopup');
+            popup.innerText = "Processing Booking Inquiry...";
             popup.style.display = 'block';
+
+            // ============================================
+            // 5. SEND EMAIL IN BACKGROUND (via Web3Forms)
+            // ============================================
+            // STEP 1: Go to https://web3forms.com/
+            // STEP 2: Enter your email to get a free Access Key
+            // STEP 3: Replace "YOUR_ACCESS_KEY_HERE" below with the key they email you
+            const web3formsAccessKey = "YOUR_ACCESS_KEY_HERE";
+
+            if (web3formsAccessKey !== "YOUR_ACCESS_KEY_HERE") {
+                fetch("https://api.web3forms.com/submit", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        access_key: web3formsAccessKey,
+                        subject: "New Car Rental Booking! 🚗",
+                        from_name: "Website Booking Form",
+                        Name: name,
+                        Mobile: mobile,
+                        Email: email,
+                        Vehicle_Needed: requirement,
+                        Pickup_Date: date,
+                        Number_of_Days: days
+                    })
+                }).then(res => console.log("Email form submitted successfully"))
+                    .catch(err => console.error("Error sending email", err));
+            }
+
+            // 6. Open WhatsApp in a new tab
+            window.open(whatsappURL, '_blank');
+
+            // Reset form after a few seconds
             setTimeout(() => {
                 popup.style.display = 'none';
-                this.reset();
-            }, 4000);
+                e.target.reset(); // use e.target instead of this for arrow-function safety if modified
+            }, 3000);
         });
     </script>
 </body>
