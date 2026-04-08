@@ -58,10 +58,21 @@
                             <label for="b_requirement">Select Vehicle</label>
                             <select id="b_requirement" required>
                                 <option value="" disabled selected>Choose a ride...</option>
-                                <option value="Toyota Innova Type 4">Toyota Innova</option>
-                                <option value="Maruti Suzuki Baleno">Maruti Suzuki Baleno</option>
-                                <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
-                                <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
+                                <optgroup label="Pablo's Fleet">
+                                    <option value="Toyota Innova 2016">Toyota Innova 2016</option>
+                                    <option value="Toyota Innova 2005 (Type 4 Conversion)">Toyota Innova 2005 (Type 4 Conversion)</option>
+                                    <option value="Maruti Suzuki Baleno (Blue)">Maruti Suzuki Baleno (Blue)</option>
+                                    <option value="Maruti Suzuki Baleno (White)">Maruti Suzuki Baleno (White)</option>
+                                    <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
+                                    <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
+                                </optgroup>
+                                <optgroup label="Oru Network">
+                                    <option value="Toyota Fortuner">Toyota Fortuner</option>
+                                    <option value="Maruti Suzuki Wagon R">Maruti Suzuki Wagon R</option>
+                                    <option value="Maruti Suzuki Swift">Maruti Suzuki Swift</option>
+                                    <option value="Toyota Innova Hycross">Toyota Innova Hycross (Hybrid)</option>
+                                    <option value="Maruti Suzuki Brezza">Maruti Suzuki Brezza</option>
+                                </optgroup>
                                 <option value="Other">Other Requirement</option>
                             </select>
                         </div>
@@ -83,7 +94,20 @@
                         <input type="number" id="b_days" min="1" required placeholder="e.g. 3">
                     </div>
 
-                    <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; margin-top: 15px; padding: 16px; font-size: 1.1rem; border-radius: 12px;">Confirm Booking Inquiry</button>
+                    <div id="price-summary" style="display: none; padding: 15px; background: rgba(249, 211, 66, 0.1); border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(249, 211, 66, 0.3);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>Daily Rate:</span>
+                            <strong id="dailyRateDisplay">₹0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; color: var(--primary-color);">
+                            <span>Estimated Total:</span>
+                            <strong id="totalAmountDisplay">₹0</strong>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-primary"
+                        style="width: 100%; margin-top: 15px; padding: 16px; font-size: 1.1rem; border-radius: 12px;">Confirm
+                        Booking Inquiry</button>
                 </form>
             </div>
 
@@ -91,12 +115,15 @@
             <div id="successState" class="success-state">
                 <div class="success-icon">✓</div>
                 <h2>Booking Inquiry Sent!</h2>
-                <p>Thank you for choosing Pablo's Car Rentals. We have received your details and will contact you shortly to confirm availability.</p>
+                <p>Thank you for choosing Pablo's Car Rentals. We have received your details and will contact you
+                    shortly to confirm availability.</p>
                 <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
                     <a href="#" id="whatsappDirect" class="btn-whatsapp" target="_blank">
                         <span>Message us on WhatsApp</span>
                     </a>
-                    <a href="index.html" style="color: var(--primary-color); font-weight: 600; text-decoration: underline;">Return to Home</a>
+                    <a href="index.html"
+                        style="color: var(--primary-color); font-weight: 600; text-decoration: underline;">Return to
+                        Home</a>
                 </div>
             </div>
         </div>
@@ -141,12 +168,12 @@
         function calculateDays() {
             const start = document.getElementById('b_pickup').value;
             const end = document.getElementById('b_return').value;
-            if(start && end) {
+            if (start && end) {
                 const startDate = new Date(start);
                 const endDate = new Date(end);
                 const diffTime = endDate - startDate;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
+
                 if (diffDays > 0) {
                     document.getElementById('b_days').value = diffDays;
                 } else if (diffDays === 0) {
@@ -155,8 +182,48 @@
                 } else {
                     document.getElementById('b_days').value = '';
                 }
+                updatePricing();
             }
         }
+
+        const dailyRates = {
+            "Toyota Innova 2016": 1500,
+            "Toyota Innova 2005 (Type 4 Conversion)": 1300,
+            "Maruti Suzuki Baleno (Blue)": 1000,
+            "Maruti Suzuki Baleno (White)": 1000,
+            "Maruti Suzuki Fronx": 1200,
+            "Maruti Suzuki XL6": 1300,
+            "Toyota Fortuner": 4500,
+            "Maruti Suzuki Wagon R": 750,
+            "Maruti Suzuki Swift": 900,
+            "Toyota Innova Hycross (Hybrid)": 2800,
+            "Maruti Suzuki Brezza": 1100
+        };
+
+        function updatePricing() {
+            const req = document.getElementById('b_requirement').value;
+            const daysStr = document.getElementById('b_days').value;
+            const days = parseInt(daysStr) || 0;
+            const summaryDiv = document.getElementById('price-summary');
+            const dailyDisplay = document.getElementById('dailyRateDisplay');
+            const totalDisplay = document.getElementById('totalAmountDisplay');
+
+            if (req && dailyRates[req]) {
+                summaryDiv.style.display = 'block';
+                const rate = dailyRates[req];
+                dailyDisplay.textContent = `₹${rate.toLocaleString('en-IN')}`;
+                if (days > 0) {
+                    totalDisplay.textContent = `₹${(rate * days).toLocaleString('en-IN')}`;
+                } else {
+                    totalDisplay.textContent = '₹0';
+                }
+            } else {
+                summaryDiv.style.display = 'none';
+            }
+        }
+
+        document.getElementById('b_requirement').addEventListener('change', updatePricing);
+        document.getElementById('b_days').addEventListener('input', updatePricing);
 
         document.getElementById('b_pickup').addEventListener('change', calculateDays);
         document.getElementById('b_return').addEventListener('change', calculateDays);
@@ -179,7 +246,7 @@
             const message = `*New Booking Inquiry!* 🚗%0A%0A*Name:* ${name}%0A*Mobile:* ${mobile}%0A*Email:* ${email}%0A*Vehicle Needed:* ${requirement}%0A*Pickup Date:* ${pickupDate}%0A*Return Date:* ${returnDate}%0A*Number of Days:* ${days}%0A%0APlease let me know the availability and pricing.`;
             const whatsappNumber = "917025328233";
             const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
-            
+
             // Set the optional WhatsApp button link
             document.getElementById('whatsappDirect').href = whatsappURL;
 
