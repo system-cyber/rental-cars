@@ -129,7 +129,10 @@
                         <input type="text" id="c_extra_km" placeholder="e.g. 8">
                     </div>
                     <div class="form-group">
-                        <label>Description</label>
+                        <label style="display: flex; justify-content: space-between; align-items: center;">
+                            Description
+                            <button type="button" onclick="generateAIDescription()" class="btn-edit" style="padding: 4px 10px; font-size: 0.75rem;">✨ Generate AI Description</button>
+                        </label>
                         <textarea id="c_desc" rows="4" placeholder="Write a short, compelling description of the car..."></textarea>
                     </div>
                     <div class="form-group">
@@ -285,6 +288,39 @@
                     `).join('')}
                     </tbody>
                 </table>`;
+        }
+
+        function generateAIDescription() {
+            const name = document.getElementById('c_name').value.trim();
+            const seats = document.getElementById('c_seats').value.trim();
+            const category = document.getElementById('c_category').value.trim();
+            const trans = document.getElementById('c_transmission').value.trim();
+
+            if (!name) {
+                alert('Please enter at least the Car Name to generate a description.');
+                return;
+            }
+
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '🪄 Generating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const adjectives = ['reliable', 'stunning', 'versatile', 'premium', 'sophisticated', 'comfort-focused'];
+                const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+                
+                let desc = `The ${name} is a ${adj} ${category || 'vehicle'} designed to provide an exceptional driving experience in Kerala. `;
+                
+                if (seats) desc += `With its spacious ${seats} cabin, it offers unmatched comfort for families and groups alike. `;
+                if (trans) desc += `Equipped with a smooth ${trans} transmission, it handles Kerala's diverse terrains with ease. `;
+                
+                desc += `Whether you're cruising along the coastline or navigating city streets, the ${name} ensures a safe and stylish journey. Perfect for those who prioritize both luxury and performance.`;
+
+                document.getElementById('c_desc').value = desc;
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 800);
         }
 
         function showToast(msg) {
