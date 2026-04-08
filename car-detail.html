@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Car Details | Pablo's Car Rentals</title>
-    <meta name="description" content="View full details, specs, and pricing for this car at Pablo's Car Rentals, Kerala.">
+    <meta name="description"
+        content="View full details, specs, and pricing for this car at Pablo's Car Rentals, Kerala.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .not-found {
-            text-align: center; padding: 120px 20px;
+            text-align: center;
+            padding: 120px 20px;
         }
-        .not-found h2 { font-size: 2rem; margin-bottom: 15px; }
+
+        .not-found h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar">
@@ -23,6 +31,7 @@
             <li><a href="index.html#about">About</a></li>
             <li><a href="index.html#services">Services</a></li>
             <li><a href="fleet.html">Our Fleet</a></li>
+            <li><a href="oru network.html">Oru Network</a></li>
             <li><a href="book.html" class="btn-primary">Book Now</a></li>
         </ul>
         <div class="hamburger">
@@ -64,7 +73,8 @@
             <div class="footer-links">
                 <h3>Follow Us</h3>
                 <a href="#" target="_blank">Facebook</a>
-                <a href="https://www.instagram.com/pablo__rentals?igsh=MXhubjdkemdoYXdlMw%3D%3D&utm_source=qr" target="_blank">Instagram</a>
+                <a href="https://www.instagram.com/pablo__rentals?igsh=MXhubjdkemdoYXdlMw%3D%3D&utm_source=qr"
+                    target="_blank">Instagram</a>
                 <a href="#" target="_blank">Twitter</a>
             </div>
         </div>
@@ -96,13 +106,13 @@
 
             // Specs
             const specs = [
-                car.seats     ? `<div class="spec-item"><strong>Seats:</strong> ${car.seats}</div>` : '',
-                car.category  ? `<div class="spec-item"><strong>Category:</strong> ${car.category}</div>` : '',
-                car.mileage   ? `<div class="spec-item"><strong>Mileage:</strong> ${car.mileage}</div>` : '',
-                car.colour    ? `<div class="spec-item"><strong>Colour:</strong> ${car.colour}</div>` : '',
-                car.priceMo   ? `<div class="spec-item"><strong>Monthly Rent:</strong> ₹${car.priceMo}</div>` : '',
-                car.priceDay  ? `<div class="spec-item"><strong>Daily Rent:</strong> ₹${car.priceDay} / day</div>` : '',
-                car.extraKm   ? `<div class="spec-item"><strong>Extra KM Rate:</strong> ₹${car.extraKm} / km</div>` : '',
+                car.seats ? `<div class="spec-item"><strong>Seats:</strong> ${car.seats}</div>` : '',
+                car.category ? `<div class="spec-item"><strong>Category:</strong> ${car.category}</div>` : '',
+                car.mileage ? `<div class="spec-item"><strong>Mileage:</strong> ${car.mileage}</div>` : '',
+                car.colour ? `<div class="spec-item"><strong>Colour:</strong> ${car.colour}</div>` : '',
+                car.priceMo ? `<div class="spec-item"><strong>Monthly Rent:</strong> ₹${car.priceMo}</div>` : '',
+                car.priceDay ? `<div class="spec-item"><strong>Daily Rent:</strong> ₹${car.priceDay} / day</div>` : '',
+                car.extraKm ? `<div class="spec-item"><strong>Extra KM Rate:</strong> ₹${car.extraKm} / km</div>` : '',
             ].filter(Boolean).join('');
 
             document.getElementById('carContent').innerHTML = `
@@ -143,4 +153,5 @@
         }
     </script>
 </body>
+
 </html>
