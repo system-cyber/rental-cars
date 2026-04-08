@@ -136,6 +136,7 @@
                             <li>Great Mileage</li>
                             <li>Smooth City Drive</li>
                         </ul>
+                        <a href="Belano.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
                     </div>
                 </div>
 
@@ -151,6 +152,7 @@
                             <li>Advanced Tech</li>
                             <li>Dynamic Design</li>
                         </ul>
+                        <a href="fronx.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
                     </div>
                 </div>
 
@@ -166,6 +168,7 @@
                             <li>Captain Seats</li>
                             <li>Luxury Feel</li>
                         </ul>
+                        <a href="xl6.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
                     </div>
                 </div>
 
@@ -183,30 +186,114 @@
                             <li>Ultimate Luxury</li>
                             <li>Explore Deals</li>
                         </ul>
-                        <a href="fleet.html#fortuner" class="btn-primary" style="margin-top: 15px;">View Details</a>
+                        <a href="fortuner.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
                     </div>
                 </div>
 
-                <!-- New: Crysta Preview -->
-                <div class="car-card pop-in" style="transition-delay: 0.5s;">
+                <div class="car-card pop-in" style="transition-delay: 0.6s;">
                     <div class="car-image">
-                        <div class="image-placeholder">Crysta Image</div>
+                        <div class="image-placeholder">Wagon R Image</div>
                     </div>
                     <div class="car-info">
-                        <h3>Innova Crysta</h3>
-                        <div class="price">₹50,000<span>/mo</span></div>
+                        <h3>Maruti Suzuki Wagon R</h3>
+                        <div class="price">₹15,000<span>/mo</span></div>
                         <ul class="features">
-                            <li>Premium MPV</li>
-                            <li>Max Comfort</li>
-                            <li>Perfect for Tours</li>
+                            <li>Compact & Spacious</li>
+                            <li>Best Mileage</li>
+                            <li>City Favorite</li>
                         </ul>
-                        <a href="fleet.html#crysta" class="btn-primary" style="margin-top: 15px;">View Details</a>
+                        <a href="wagonr.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
                     </div>
                 </div>
+
+                <div class="car-card pop-in" style="transition-delay: 0.7s;">
+                    <div class="car-image">
+                        <div class="image-placeholder">Swift Image</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Maruti Suzuki Swift</h3>
+                        <div class="price">₹20,000<span>/mo</span></div>
+                        <ul class="features">
+                            <li>Sporty Drive</li>
+                            <li>Agile Handling</li>
+                            <li>Pure Performance</li>
+                        </ul>
+                        <a href="swift.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
+                    </div>
+                </div>
+
+                <div class="car-card pop-in" style="transition-delay: 0.8s;">
+                    <div class="car-image">
+                        <div class="image-placeholder">Hycross Image</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Innova Hycross (Hybrid)</h3>
+                        <div class="price">₹60,000<span>/mo</span></div>
+                        <ul class="features">
+                            <li>Eco Hybrid Tech</li>
+                            <li>Panoramic Roof</li>
+                            <li>Elite Luxury</li>
+                        </ul>
+                        <a href="hycross.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
+                    </div>
+                </div>
+
+                <div class="car-card pop-in" style="transition-delay: 0.9s;">
+                    <div class="car-image">
+                        <div class="image-placeholder">Brezza Image</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Maruti Suzuki Brezza</h3>
+                        <div class="price">₹32,000<span>/mo</span></div>
+                        <ul class="features">
+                            <li>Tough Compact SUV</li>
+                            <li>Modern Style</li>
+                            <li>Family Safe</li>
+                        </ul>
+                        <a href="brezza.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
+                    </div>
+                </div>
+
+                <!-- Dynamic Cars from Admin Panel -->
+                <div id="dynamic-featured-fleet" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;"></div>
 
             </div>
         </div>
     </section>
+
+    <script>
+        // Render dynamically-added cars from Admin Panel on Home Page
+        (function() {
+            const STORAGE_KEY = 'pablo_fleet_cars';
+            const cars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const container = document.getElementById('dynamic-featured-fleet');
+            if (!cars.length) return;
+
+            cars.forEach((car, index) => {
+                const card = document.createElement('div');
+                card.className = 'car-card pop-in';
+                card.style.transitionDelay = (1.0 + (index * 0.1)) + 's';
+                
+                const imageHTML = car.img1 
+                    ? `<img src="${car.img1}" alt="${car.name}" onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\'>Image Missing</div>'">`
+                    : `<div class="image-placeholder">Image Coming Soon</div>`;
+
+                card.innerHTML = `
+                    <div class="car-image">${imageHTML}</div>
+                    <div class="car-info">
+                        <h3>${car.name}</h3>
+                        <div class="price">₹${car.priceMo || '—'}<span>/mo</span></div>
+                        <ul class="features">
+                            <li>${car.category || 'Premium Vehicle'}</li>
+                            <li>${car.seats || '—'} Capacity</li>
+                            <li>${car.transmission || 'Available'}</li>
+                        </ul>
+                        <a href="car-detail.html?id=${car.id}" class="btn-primary" style="margin-top: 15px;">View Details</a>
+                    </div>`;
+                container.appendChild(card);
+            });
+        })();
+    </script>
 
     <!-- Footer -->
     <footer id="contact">
