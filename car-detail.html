@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Details | Pablo's Car Rentals</title>
+    <meta name="description" content="View full details, specs, and pricing for this car at Pablo's Car Rentals, Kerala.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .not-found {
+            text-align: center; padding: 120px 20px;
+        }
+        .not-found h2 { font-size: 2rem; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Pablo's Car Rentals</div>
+        <ul class="nav-links">
+            <li><a href="index.html#home">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#services">Services</a></li>
+            <li><a href="fleet.html">Our Fleet</a></li>
+            <li><a href="deals.html">Deals</a></li>
+            <li><a href="book.html" class="btn-primary">Book Now</a></li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <header class="page-header slide-up" id="carHeader">
+        <h1 id="carTitle">Loading...</h1>
+        <p id="carSubtitle"></p>
+    </header>
+
+    <main class="fleet-page-container" id="carContent">
+        <!-- Content injected by JavaScript -->
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h2>Pablo's Car Rentals</h2>
+                <p>Premium self-drive taxis and private cars in Kerala.</p>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <p>📞 +91 7025328233</p>
+                <p>✉️ pablo@gmail.com</p>
+                <p>📍 Kerala, India</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html#home">Home</a>
+                <a href="index.html#about">About</a>
+                <a href="index.html#services">Services</a>
+                <a href="fleet.html">Our Fleet</a>
+            </div>
+            <div class="footer-links">
+                <h3>Follow Us</h3>
+                <a href="#" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/pablo__rentals?igsh=MXhubjdkemdoYXdlMw%3D%3D&utm_source=qr" target="_blank">Instagram</a>
+                <a href="#" target="_blank">Twitter</a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; <span id="year"></span> Pablo. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const STORAGE_KEY = 'pablo_fleet_cars';
+
+        function getCarById(id) {
+            const cars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            return cars.find(c => c.id === id) || null;
+        }
+
+        function renderCar(car) {
+            // Update page title & meta
+            document.title = car.name + ' | Pablo\'s Car Rentals';
+            document.getElementById('carTitle').textContent = car.name;
+            document.getElementById('carSubtitle').textContent = car.transmission || 'Premium Rental Vehicle';
+
+            // Gallery
+            let galleryHTML = '';
+            if (car.img1) galleryHTML += `<img src="${car.img1}" alt="${car.name} Exterior" onerror="this.style.display='none'">`;
+            if (car.img2) galleryHTML += `<img src="${car.img2}" alt="${car.name} Interior" onerror="this.style.display='none'">`;
+            if (!car.img1 && !car.img2) galleryHTML = `<div class="image-placeholder" style="grid-column: span 2;"><p>Vehicle Image Coming Soon</p></div>`;
+
+            // Specs
+            const specs = [
+                car.seats     ? `<div class="spec-item"><strong>Seats:</strong> ${car.seats}</div>` : '',
+                car.category  ? `<div class="spec-item"><strong>Category:</strong> ${car.category}</div>` : '',
+                car.mileage   ? `<div class="spec-item"><strong>Mileage:</strong> ${car.mileage}</div>` : '',
+                car.colour    ? `<div class="spec-item"><strong>Colour:</strong> ${car.colour}</div>` : '',
+                car.priceMo   ? `<div class="spec-item"><strong>Monthly Rent:</strong> ₹${car.priceMo}</div>` : '',
+                car.priceDay  ? `<div class="spec-item"><strong>Daily Rent:</strong> ₹${car.priceDay} / day</div>` : '',
+                car.extraKm   ? `<div class="spec-item"><strong>Extra KM Rate:</strong> ₹${car.extraKm} / km</div>` : '',
+            ].filter(Boolean).join('');
+
+            document.getElementById('carContent').innerHTML = `
+                <section class="car-detail fade-in">
+                    <div class="car-detail-header">
+                        <h2>${car.name}</h2>
+                        <span class="transmission-tag">${car.transmission || 'Available'}</span>
+                    </div>
+                    <div class="car-gallery">${galleryHTML}</div>
+                    <div class="car-specs">${specs}</div>
+                    ${car.desc ? `<p class="car-description">${car.desc}</p>` : ''}
+                    <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:10px;">
+                        <a href="book.html" class="btn-primary">Book This Car</a>
+                        <a href="fleet.html" style="color:var(--primary-color);font-weight:600;line-height:48px;">← Back to Fleet</a>
+                    </div>
+                </section>`;
+        }
+
+        function renderNotFound() {
+            document.getElementById('carTitle').textContent = 'Car Not Found';
+            document.getElementById('carSubtitle').textContent = '';
+            document.getElementById('carContent').innerHTML = `
+                <div class="not-found">
+                    <h2>This car could not be found.</h2>
+                    <p>It may have been removed or the link is incorrect.</p>
+                    <a href="fleet.html" class="btn-primary" style="margin-top:20px;display:inline-block;">View Our Full Fleet</a>
+                </div>`;
+        }
+
+        // Main
+        const params = new URLSearchParams(window.location.search);
+        const carId = params.get('id');
+        if (carId) {
+            const car = getCarById(carId);
+            car ? renderCar(car) : renderNotFound();
+        } else {
+            renderNotFound();
+        }
+    </script>
+</body>
+</html>

@@ -246,6 +246,9 @@
             <a href="book.html" class="btn-primary">Book This Car</a>
         </section>
 
+        <!-- Dynamic Cars from Admin Panel -->
+        <div id="dynamic-fleet-section"></div>
+
     </main>
 
     <!-- Footer -->
@@ -257,8 +260,8 @@
             </div>
             <div class="footer-contact">
                 <h3>Contact Us</h3>
-                <p>📞 +91 98765 43210</p>
-                <p>✉️ pablo@pabloscarrentals.com</p>
+                <p>📞 +91 7025328233</p>
+                <p>✉️ pablo@gmail.com</p>
                 <p>📍 Kerala, India</p>
             </div>
             <div class="footer-links">
@@ -281,5 +284,48 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Render dynamically-added cars from Admin Panel
+        (function() {
+            const STORAGE_KEY = 'pablo_fleet_cars';
+            const cars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const container = document.getElementById('dynamic-fleet-section');
+            if (!cars.length) return;
+
+            cars.forEach(car => {
+                let galleryHTML = '';
+                if (car.img1) galleryHTML += `<img src="${car.img1}" alt="${car.name} Exterior" onerror="this.style.display='none'">`;
+                if (car.img2) galleryHTML += `<img src="${car.img2}" alt="${car.name} Interior" onerror="this.style.display='none'">`;
+                if (!car.img1 && !car.img2) galleryHTML = `<div class="image-placeholder" style="grid-column:span 2;"><p>Image Coming Soon</p></div>`;
+
+                const specs = [
+                    car.seats    ? `<div class="spec-item"><strong>Seats:</strong> ${car.seats}</div>` : '',
+                    car.category ? `<div class="spec-item"><strong>Category:</strong> ${car.category}</div>` : '',
+                    car.mileage  ? `<div class="spec-item"><strong>Mileage:</strong> ${car.mileage}</div>` : '',
+                    car.colour   ? `<div class="spec-item"><strong>Colour:</strong> ${car.colour}</div>` : '',
+                    car.priceMo  ? `<div class="spec-item"><strong>Monthly Rent:</strong> ₹${car.priceMo}</div>` : '',
+                    car.priceDay ? `<div class="spec-item"><strong>Daily Rent:</strong> ₹${car.priceDay} / day</div>` : '',
+                    car.extraKm  ? `<div class="spec-item"><strong>Extra KM Rate:</strong> ₹${car.extraKm} / km</div>` : '',
+                ].filter(Boolean).join('');
+
+                const section = document.createElement('section');
+                section.id = car.id;
+                section.className = 'car-detail fade-in';
+                section.innerHTML = `
+                    <div class="car-detail-header">
+                        <h2>${car.name}</h2>
+                        <span class="transmission-tag">${car.transmission || 'Available'}</span>
+                    </div>
+                    <div class="car-gallery">${galleryHTML}</div>
+                    <div class="car-specs">${specs}</div>
+                    ${car.desc ? `<p class="car-description">${car.desc}</p>` : ''}
+                    <div style="display:flex;gap:15px;flex-wrap:wrap;">
+                        <a href="book.html" class="btn-primary">Book This Car</a>
+                        <a href="car-detail.html?id=${car.id}" style="color:var(--primary-color);font-weight:600;line-height:48px;">Full Details ↗</a>
+                    </div>`;
+                container.appendChild(section);
+            });
+        })();
+    </script>
 </body>
 </html>

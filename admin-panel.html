@@ -3,148 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Generator | Admin Panel</title>
+    <title>Admin Panel | Pablo's Car Rentals</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-container {
-            max-width: 1000px;
-            margin: 100px auto;
-            padding: 40px;
-            background: var(--surface-color);
-            border-radius: 24px;
-            border: 1px solid var(--surface-border);
+        body { padding-top: 80px; }
+        .admin-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .admin-tabs { display: flex; gap: 10px; margin-bottom: 30px; }
+        .admin-tab {
+            padding: 12px 28px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            border: 1px solid var(--surface-border); background: var(--surface-color);
+            color: var(--text-muted); transition: var(--transition);
         }
-        .generator-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+        .admin-tab.active { background: var(--primary-color); color: #000; border-color: var(--primary-color); }
+        .tab-section { display: none; }
+        .tab-section.active { display: block; }
+        .form-card {
+            background: var(--surface-color); border-radius: 20px; padding: 40px;
+            border: 1px solid var(--surface-border); box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
-        .code-output {
-            background: #000;
-            color: #2ecc71;
-            padding: 20px;
-            border-radius: 12px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            font-size: 0.9rem;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #333;
-        }
+        .form-card h2 { margin-bottom: 25px; font-size: 1.5rem; }
+        .admin-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .admin-form .form-group { margin-bottom: 18px; }
+        .admin-form label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .admin-form input, .admin-form select, .admin-form textarea {
-            background: var(--bg-color);
-            margin-bottom: 15px;
+            width: 100%; padding: 12px 16px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1); background: var(--bg-color);
+            color: var(--text-main); font-family: var(--font-family); font-size: 0.95rem;
         }
-        .copy-btn {
-            background: var(--primary-color);
-            color: #000;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            border: none;
-            margin-top: 10px;
+        .admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus {
+            outline: none; border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(249,211,66,0.15);
         }
+        .btn-publish { background: var(--primary-color); color: #000; border: none; padding: 14px 30px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 10px; transition: var(--transition); }
+        .btn-publish:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-danger { background: rgba(231,76,60,0.1); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: var(--transition); }
+        .btn-danger:hover { background: #e74c3c; color: #fff; }
+        .btn-edit { background: rgba(249,211,66,0.1); color: var(--primary-color); border: 1px solid rgba(249,211,66,0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: var(--transition); }
+        .btn-edit:hover { background: var(--primary-color); color: #000; }
+        .cars-table { width: 100%; border-collapse: collapse; }
+        .cars-table th { text-align: left; padding: 14px 16px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--surface-border); }
+        .cars-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+        .cars-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .car-thumb { width: 60px; height: 45px; object-fit: cover; border-radius: 6px; background: #222; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: rgba(46,204,113,0.1); color: #2ecc71; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 15px; }
+        .success-toast {
+            position: fixed; bottom: 30px; right: 30px; background: #2ecc71;
+            color: #000; padding: 15px 25px; border-radius: 12px; font-weight: 600;
+            display: none; animation: slideUp 0.3s ease; z-index: 9999;
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @media (max-width: 600px) { .admin-form .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">Pablo's Admin</div>
+        <div class="logo">⚙️ Admin Panel</div>
         <ul class="nav-links">
+            <li><a href="fleet.html" target="_blank">View Fleet Page ↗</a></li>
             <li><a href="index.html">Back to Site</a></li>
         </ul>
     </nav>
 
-    <div class="admin-container fade-in">
-        <h1>Car Card Generator</h1>
-        <p style="margin-bottom: 30px; color: var(--text-muted);">Fill this form to generate the HTML code for a new car. Copy and paste the result into fleet.html or index.html.</p>
+    <div class="admin-wrapper">
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size: 2rem;">Car Management</h1>
+            <p>Add, edit, or remove cars. Changes appear on the website instantly.</p>
+        </div>
 
-        <div class="generator-grid">
-            <div class="admin-form">
-                <div class="form-group">
-                    <label>Car Name & Year</label>
-                    <input type="text" id="c_name" placeholder="e.g. Toyota Fortuner 2024">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Monthly Price</label>
-                        <input type="text" id="c_price_mo" placeholder="e.g. 85,000">
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchTab('add')">➕ Add New Car</button>
+            <button class="admin-tab" onclick="switchTab('manage')">🚗 Manage Cars</button>
+        </div>
+
+        <!-- ADD CAR TAB -->
+        <div id="tab-add" class="tab-section active">
+            <div class="form-card">
+                <h2 id="formTitle">Add a New Car</h2>
+                <input type="hidden" id="editId">
+                <div class="admin-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Car Name & Model</label>
+                            <input type="text" id="c_name" placeholder="e.g. Toyota Fortuner 2024">
+                        </div>
+                        <div class="form-group">
+                            <label>Transmission</label>
+                            <input type="text" id="c_transmission" placeholder="e.g. Automatic, Manual">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Monthly Price (₹)</label>
+                            <input type="text" id="c_price_mo" placeholder="e.g. 85,000">
+                        </div>
+                        <div class="form-group">
+                            <label>Daily Price (₹)</label>
+                            <input type="text" id="c_price_day" placeholder="e.g. 3,500">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Seats</label>
+                            <input type="text" id="c_seats" placeholder="e.g. 7-Seater">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="c_category" placeholder="e.g. Luxury SUV">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mileage</label>
+                            <input type="text" id="c_mileage" placeholder="e.g. 10-12 km/l">
+                        </div>
+                        <div class="form-group">
+                            <label>Colour</label>
+                            <input type="text" id="c_colour" placeholder="e.g. Pearl White">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Daily Price</label>
-                        <input type="text" id="c_price_day" placeholder="e.g. 3,500">
+                        <label>Extra KM Rate (₹/km)</label>
+                        <input type="text" id="c_extra_km" placeholder="e.g. 8">
                     </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="c_desc" rows="4" placeholder="Write a short, compelling description of the car..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Exterior Image URL</label>
+                        <input type="text" id="c_img1" placeholder="e.g. https://... or assets/fortuner.png">
+                    </div>
+                    <div class="form-group">
+                        <label>Interior Image URL (optional)</label>
+                        <input type="text" id="c_img2" placeholder="e.g. assets/fortuner_interior.png">
+                    </div>
+                    <button class="btn-publish" onclick="publishCar()">🚀 Publish to Website</button>
                 </div>
-                <div class="form-group">
-                    <label>Seats</label>
-                    <input type="text" id="c_seats" placeholder="e.g. 7-Seater">
-                </div>
-                <div class="form-group">
-                    <label>Mileage & Color</label>
-                    <input type="text" id="c_extra" placeholder="e.g. 10 km/l | Pearl White">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="c_desc" rows="4" placeholder="Brief write-up about the car..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Image Filename (after upload to assets/)</label>
-                    <input type="text" id="c_img" placeholder="e.g. fortuner.png">
-                </div>
-                <button class="btn-primary" onclick="generateCode()" style="width: 100%;">Generate HTML Code</button>
             </div>
+        </div>
 
-            <div>
-                <label>Generated Code (Copy this):</label>
-                <div id="resultCode" class="code-output">Your generated code will appear here...</div>
-                <button class="copy-btn" onclick="copyCode()">Copy to Clipboard</button>
-                
-                <div style="margin-top: 30px;">
-                    <label>Live Preview:</label>
-                    <div id="previewContainer" style="margin-top: 15px;"></div>
-                </div>
+        <!-- MANAGE CARS TAB -->
+        <div id="tab-manage" class="tab-section">
+            <div class="form-card">
+                <h2>Published Cars</h2>
+                <div id="carsTableContainer"></div>
             </div>
         </div>
     </div>
 
+    <div id="successToast" class="success-toast">✅ Car published successfully!</div>
+
     <script>
-        function generateCode() {
-            const name = document.getElementById('c_name').value || 'Car Name';
-            const priceMo = document.getElementById('c_price_mo').value || '0';
-            const priceDay = document.getElementById('c_price_day').value || '0';
-            const seats = document.getElementById('c_seats').value || '5-Seater';
-            const extra = document.getElementById('c_extra').value || 'Mileage | Color';
-            const desc = document.getElementById('c_desc').value || 'Description here...';
-            const img = document.getElementById('c_img').value || 'placeholder.png';
+        const STORAGE_KEY = 'pablo_fleet_cars';
 
-            const htmlCode = `
-<!-- ${name} Card -->
-<div class="car-card pop-in">
-    <div class="car-image">
-        <img src="assets/${img}" alt="${name}">
-    </div>
-    <div class="car-info">
-        <h3>${name}</h3>
-        <div class="price">₹${priceMo}<span>/mo</span></div>
-        <ul class="features">
-            <li>${seats}</li>
-            <li>${extra}</li>
-            <li>₹${priceDay} / day</li>
-        </ul>
-        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">${desc}</p>
-        <a href="book.html" class="btn-primary" style="margin-top: 15px;">Book Now</a>
-    </div>
-</div>`;
-
-            document.getElementById('resultCode').innerText = htmlCode;
-            document.getElementById('previewContainer').innerHTML = htmlCode;
+        function getCars() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
         }
 
-        function copyCode() {
-            const text = document.getElementById('resultCode').innerText;
-            navigator.clipboard.writeText(text);
-            alert('Code copied to clipboard! Paste it into your fleet section.');
+        function saveCars(cars) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cars));
+        }
+
+        function slugify(name) {
+            return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'manage') renderTable();
+        }
+
+        function publishCar() {
+            const name = document.getElementById('c_name').value.trim();
+            if (!name) { alert('Please enter a car name.'); return; }
+
+            const editId = document.getElementById('editId').value;
+            const cars = getCars();
+
+            const car = {
+                id: editId || slugify(name) + '-' + Date.now(),
+                name,
+                transmission: document.getElementById('c_transmission').value,
+                priceMo: document.getElementById('c_price_mo').value,
+                priceDay: document.getElementById('c_price_day').value,
+                seats: document.getElementById('c_seats').value,
+                category: document.getElementById('c_category').value,
+                mileage: document.getElementById('c_mileage').value,
+                colour: document.getElementById('c_colour').value,
+                extraKm: document.getElementById('c_extra_km').value,
+                desc: document.getElementById('c_desc').value,
+                img1: document.getElementById('c_img1').value,
+                img2: document.getElementById('c_img2').value,
+                createdAt: editId ? (cars.find(c => c.id === editId)?.createdAt || new Date().toISOString()) : new Date().toISOString()
+            };
+
+            if (editId) {
+                const idx = cars.findIndex(c => c.id === editId);
+                if (idx !== -1) cars[idx] = car;
+            } else {
+                cars.push(car);
+            }
+
+            saveCars(cars);
+            showToast(editId ? '✅ Car updated!' : '✅ Car published!');
+            clearForm();
+        }
+
+        function clearForm() {
+            ['c_name','c_transmission','c_price_mo','c_price_day','c_seats','c_category',
+             'c_mileage','c_colour','c_extra_km','c_desc','c_img1','c_img2','editId'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('formTitle').textContent = 'Add a New Car';
+        }
+
+        function deleteCar(id) {
+            if (!confirm('Delete this car from the website?')) return;
+            saveCars(getCars().filter(c => c.id !== id));
+            renderTable();
+            showToast('🗑️ Car removed.');
+        }
+
+        function editCar(id) {
+            const car = getCars().find(c => c.id === id);
+            if (!car) return;
+            document.getElementById('c_name').value = car.name;
+            document.getElementById('c_transmission').value = car.transmission;
+            document.getElementById('c_price_mo').value = car.priceMo;
+            document.getElementById('c_price_day').value = car.priceDay;
+            document.getElementById('c_seats').value = car.seats;
+            document.getElementById('c_category').value = car.category;
+            document.getElementById('c_mileage').value = car.mileage;
+            document.getElementById('c_colour').value = car.colour;
+            document.getElementById('c_extra_km').value = car.extraKm;
+            document.getElementById('c_desc').value = car.desc;
+            document.getElementById('c_img1').value = car.img1;
+            document.getElementById('c_img2').value = car.img2;
+            document.getElementById('editId').value = car.id;
+            document.getElementById('formTitle').textContent = 'Edit: ' + car.name;
+            // Switch to add tab
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-add').classList.add('active');
+            document.querySelectorAll('.admin-tab')[0].classList.add('active');
+            window.scrollTo(0, 300);
+        }
+
+        function renderTable() {
+            const cars = getCars();
+            const container = document.getElementById('carsTableContainer');
+            if (!cars.length) {
+                container.innerHTML = `<div class="empty-state"><div class="icon">🚗</div><p>No cars published yet. Add your first car!</p></div>`;
+                return;
+            }
+            container.innerHTML = `
+                <table class="cars-table">
+                    <thead><tr>
+                        <th>Photo</th><th>Name</th><th>Price/Mo</th><th>Seats</th><th>Colour</th><th>Status</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody>
+                    ${cars.map(car => `
+                        <tr>
+                            <td>${car.img1 ? `<img src="${car.img1}" class="car-thumb" onerror="this.style.background='#333';this.src=''">` : '<div class="car-thumb" style="background:#222;display:flex;align-items:center;justify-content:center;color:#555;">🚗</div>'}</td>
+                            <td><strong>${car.name}</strong><br><small style="color:var(--text-muted)">${car.transmission || ''}</small></td>
+                            <td style="color:var(--primary-color);font-weight:700;">₹${car.priceMo || '—'}</td>
+                            <td>${car.seats || '—'}</td>
+                            <td>${car.colour || '—'}</td>
+                            <td><span class="status-badge">Live</span></td>
+                            <td style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <button class="btn-edit" onclick="editCar('${car.id}')">Edit</button>
+                                <a href="car-detail.html?id=${car.id}" target="_blank" class="btn-edit">View ↗</a>
+                                <button class="btn-danger" onclick="deleteCar('${car.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('successToast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
         }
     </script>
 </body>
