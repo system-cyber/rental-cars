@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Generator | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 100px auto;
+            padding: 40px;
+            background: var(--surface-color);
+            border-radius: 24px;
+            border: 1px solid var(--surface-border);
+        }
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .code-output {
+            background: #000;
+            color: #2ecc71;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        .admin-form input, .admin-form select, .admin-form textarea {
+            background: var(--bg-color);
+            margin-bottom: 15px;
+        }
+        .copy-btn {
+            background: var(--primary-color);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Pablo's Admin</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Back to Site</a></li>
+        </ul>
+    </nav>
+
+    <div class="admin-container fade-in">
+        <h1>Car Card Generator</h1>
+        <p style="margin-bottom: 30px; color: var(--text-muted);">Fill this form to generate the HTML code for a new car. Copy and paste the result into fleet.html or index.html.</p>
+
+        <div class="generator-grid">
+            <div class="admin-form">
+                <div class="form-group">
+                    <label>Car Name & Year</label>
+                    <input type="text" id="c_name" placeholder="e.g. Toyota Fortuner 2024">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Monthly Price</label>
+                        <input type="text" id="c_price_mo" placeholder="e.g. 85,000">
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Price</label>
+                        <input type="text" id="c_price_day" placeholder="e.g. 3,500">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Seats</label>
+                    <input type="text" id="c_seats" placeholder="e.g. 7-Seater">
+                </div>
+                <div class="form-group">
+                    <label>Mileage & Color</label>
+                    <input type="text" id="c_extra" placeholder="e.g. 10 km/l | Pearl White">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="c_desc" rows="4" placeholder="Brief write-up about the car..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Image Filename (after upload to assets/)</label>
+                    <input type="text" id="c_img" placeholder="e.g. fortuner.png">
+                </div>
+                <button class="btn-primary" onclick="generateCode()" style="width: 100%;">Generate HTML Code</button>
+            </div>
+
+            <div>
+                <label>Generated Code (Copy this):</label>
+                <div id="resultCode" class="code-output">Your generated code will appear here...</div>
+                <button class="copy-btn" onclick="copyCode()">Copy to Clipboard</button>
+                
+                <div style="margin-top: 30px;">
+                    <label>Live Preview:</label>
+                    <div id="previewContainer" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateCode() {
+            const name = document.getElementById('c_name').value || 'Car Name';
+            const priceMo = document.getElementById('c_price_mo').value || '0';
+            const priceDay = document.getElementById('c_price_day').value || '0';
+            const seats = document.getElementById('c_seats').value || '5-Seater';
+            const extra = document.getElementById('c_extra').value || 'Mileage | Color';
+            const desc = document.getElementById('c_desc').value || 'Description here...';
+            const img = document.getElementById('c_img').value || 'placeholder.png';
+
+            const htmlCode = `
+<!-- ${name} Card -->
+<div class="car-card pop-in">
+    <div class="car-image">
+        <img src="assets/${img}" alt="${name}">
+    </div>
+    <div class="car-info">
+        <h3>${name}</h3>
+        <div class="price">₹${priceMo}<span>/mo</span></div>
+        <ul class="features">
+            <li>${seats}</li>
+            <li>${extra}</li>
+            <li>₹${priceDay} / day</li>
+        </ul>
+        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">${desc}</p>
+        <a href="book.html" class="btn-primary" style="margin-top: 15px;">Book Now</a>
+    </div>
+</div>`;
+
+            document.getElementById('resultCode').innerText = htmlCode;
+            document.getElementById('previewContainer').innerHTML = htmlCode;
+        }
+
+        function copyCode() {
+            const text = document.getElementById('resultCode').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Code copied to clipboard! Paste it into your fleet section.');
+        }
+    </script>
+</body>
+</html>
