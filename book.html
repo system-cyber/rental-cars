@@ -34,55 +34,70 @@
 
     <main class="fleet-page-container">
         <div class="booking-form-container fade-in">
-            <form id="bookingForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="b_name">Full Name</label>
-                        <input type="text" id="b_name" required placeholder="e.g. John Doe">
+            <!-- Form Container -->
+            <div id="formContainer">
+                <form id="bookingForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="b_name">Full Name</label>
+                            <input type="text" id="b_name" required placeholder="e.g. John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="b_mobile">Mobile Number</label>
+                            <input type="tel" id="b_mobile" required placeholder="e.g. 9876543210">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="b_mobile">Mobile Number</label>
-                        <input type="tel" id="b_mobile" required placeholder="e.g. 9876543210">
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="b_email">Email Address</label>
-                        <input type="email" id="b_email" required placeholder="e.g. john@example.com">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="b_email">Email Address</label>
+                            <input type="email" id="b_email" required placeholder="e.g. john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="b_requirement">Select Vehicle</label>
+                            <select id="b_requirement" required>
+                                <option value="" disabled selected>Choose a ride...</option>
+                                <option value="Toyota Innova Type 4">Toyota Innova</option>
+                                <option value="Maruti Suzuki Baleno">Maruti Suzuki Baleno</option>
+                                <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
+                                <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
+                                <option value="Other">Other Requirement</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="b_requirement">Select Vehicle</label>
-                        <select id="b_requirement" required>
-                            <option value="" disabled selected>Choose a ride...</option>
-                            <option value="Toyota Innova Type 4">Toyota Innova</option>
-                            <option value="Maruti Suzuki Baleno">Maruti Suzuki Baleno</option>
-                            <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
-                            <option value="Maruti Suzuki XL6">Maruti Suzuki XL6</option>
-                            <option value="Other">Other Requirement</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="b_pickup">Pickup Date</label>
-                        <input type="date" id="b_pickup" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="b_pickup">Pickup Date</label>
+                            <input type="date" id="b_pickup" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="b_return">Return Date</label>
+                            <input type="date" id="b_return" required>
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="b_return">Return Date</label>
-                        <input type="date" id="b_return" required>
+                        <label for="b_days">Number of Days</label>
+                        <input type="number" id="b_days" min="1" required placeholder="e.g. 3">
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="b_days">Number of Days</label>
-                    <input type="number" id="b_days" min="1" required placeholder="e.g. 3">
-                </div>
+                    <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; margin-top: 15px; padding: 16px; font-size: 1.1rem; border-radius: 12px;">Confirm Booking Inquiry</button>
+                </form>
+            </div>
 
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px; padding: 16px; font-size: 1.1rem; border-radius: 12px;">Confirm Booking Inquiry</button>
-                <div id="bookingPopup" class="popup-message">We will contact soon. Thanks for your contact!</div>
-            </form>
+            <!-- Success State -->
+            <div id="successState" class="success-state">
+                <div class="success-icon">✓</div>
+                <h2>Booking Inquiry Sent!</h2>
+                <p>Thank you for choosing Pablo's Car Rentals. We have received your details and will contact you shortly to confirm availability.</p>
+                <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                    <a href="#" id="whatsappDirect" class="btn-whatsapp" target="_blank">
+                        <span>Message us on WhatsApp</span>
+                    </a>
+                    <a href="index.html" style="color: var(--primary-color); font-weight: 600; text-decoration: underline;">Return to Home</a>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -147,6 +162,8 @@
 
         document.getElementById('bookingForm').addEventListener('submit', function (e) {
             e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
 
             // 1. Get all form values
             const name = document.getElementById('b_name').value;
@@ -157,56 +174,50 @@
             const returnDate = document.getElementById('b_return').value;
             const days = document.getElementById('b_days').value;
 
-            // 2. Format the WhatsApp message exactly how you want to read it
+            // 2. Format the WhatsApp message (for the optional button)
             const message = `*New Booking Inquiry!* 🚗%0A%0A*Name:* ${name}%0A*Mobile:* ${mobile}%0A*Email:* ${email}%0A*Vehicle Needed:* ${requirement}%0A*Pickup Date:* ${pickupDate}%0A*Return Date:* ${returnDate}%0A*Number of Days:* ${days}%0A%0APlease let me know the availability and pricing.`;
-
-            // 3. Define the receiving WhatsApp number! (Must include country code, no + or spaces)
             const whatsappNumber = "917025328233";
-
-            // 4. Create the final WhatsApp URL
             const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            // Set the optional WhatsApp button link
+            document.getElementById('whatsappDirect').href = whatsappURL;
 
-            // Show a quick success popup before redirecting
-            const popup = document.getElementById('bookingPopup');
-            popup.innerText = "Processing Booking Inquiry...";
-            popup.style.display = 'block';
+            // 3. SEND TO WEB3FORMS (Silent Submission)
+            const web3formsAccessKey = "896409f8-562e-4e50-970f-0adf93263b1c";
 
-            // ============================================
-            // 5. SEND EMAIL IN BACKGROUND (via Web3Forms)
-            // ============================================
-            const web3formsAccessKey = "YOUR_ACCESS_KEY_HERE";
-
-            if (web3formsAccessKey !== "YOUR_ACCESS_KEY_HERE") {
-                fetch("https://api.web3forms.com/submit", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    },
-                    body: JSON.stringify({
-                        access_key: web3formsAccessKey,
-                        subject: "New Car Rental Booking! 🚗",
-                        from_name: "Website Booking Form",
-                        Name: name,
-                        Mobile: mobile,
-                        Email: email,
-                        Vehicle_Needed: requirement,
-                        Pickup_Date: pickupDate,
-                        Return_Date: returnDate,
-                        Number_of_Days: days
-                    })
-                }).then(res => console.log("Email form submitted successfully"))
-                    .catch(err => console.error("Error sending email", err));
-            }
-
-            // 6. Open WhatsApp in a new tab
-            window.open(whatsappURL, '_blank');
-
-            // Reset form after a few seconds
-            setTimeout(() => {
-                popup.style.display = 'none';
-                e.target.reset();
-            }, 3000);
+            fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    access_key: web3formsAccessKey,
+                    subject: `New Booking: ${name} (${requirement})`,
+                    from_name: "Pablo's Rentals Booking System",
+                    Name: name,
+                    Mobile: mobile,
+                    Email: email,
+                    Vehicle_Needed: requirement,
+                    Pickup_Date: pickupDate,
+                    Return_Date: returnDate,
+                    Number_of_Days: days
+                })
+            }).then(async (response) => {
+                const result = await response.json();
+                if (response.status == 200) {
+                    // Success! Switch UI states
+                    document.getElementById('formContainer').style.display = 'none';
+                    document.getElementById('successState').style.display = 'block';
+                } else {
+                    alert("Something went wrong. Please try again or contact us directly.");
+                    submitBtn.classList.remove('loading');
+                }
+            }).catch(error => {
+                console.error("Error submitting form", error);
+                alert("Submission failed. Please check your connection.");
+                submitBtn.classList.remove('loading');
+            });
         });
     </script>
 </body>
