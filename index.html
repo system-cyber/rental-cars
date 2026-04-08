@@ -116,10 +116,11 @@
                         </a>
                         <div class="price">₹35,000 - ₹40,000<span>/mo</span></div>
                         <ul class="features">
-                            <li>Spacious 7-Seater</li>
+                            <li>Spacious 7 & 8-Seater</li>
                             <li>Premium Comfort</li>
                             <li>Ideal for Families</li>
                         </ul>
+                        <a href="innova.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
                     </div>
                 </div>
 
@@ -255,7 +256,9 @@
                 </div>
 
                 <!-- Dynamic Cars from Admin Panel -->
-                <div id="dynamic-featured-fleet" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;"></div>
+                <div id="dynamic-featured-fleet"
+                    style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                </div>
 
             </div>
         </div>
@@ -263,7 +266,7 @@
 
     <script>
         // Render dynamically-added cars from Admin Panel on Home Page
-        (function() {
+        (function () {
             const STORAGE_KEY = 'pablo_fleet_cars';
             const cars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
             const container = document.getElementById('dynamic-featured-fleet');
@@ -273,8 +276,8 @@
                 const card = document.createElement('div');
                 card.className = 'car-card pop-in';
                 card.style.transitionDelay = (1.0 + (index * 0.1)) + 's';
-                
-                const imageHTML = car.img1 
+
+                const imageHTML = car.img1
                     ? `<img src="${car.img1}" alt="${car.name}" onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\'>Image Missing</div>'">`
                     : `<div class="image-placeholder">Image Coming Soon</div>`;
 
