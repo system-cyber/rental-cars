@@ -22,6 +22,7 @@
             <li><a href="fleet.html">Our Fleet</a></li>
             <li><a href="oru network.html">Oru Network</a></li>
             <li><a href="book.html" class="btn-primary">Book Now</a></li>
+            <li><a href="login.html" class="admin-badge btn-outline">Login</a></li>
         </ul>
         <div class="hamburger">
             <span class="bar"></span>
@@ -55,7 +56,7 @@
 
                 <div class="car-card pop-in" style="transition-delay: 0.6s;">
                     <div class="car-image">
-                        <div class="image-placeholder">Wagon R Image</div>
+                        <img src="assets/wagonr.png" alt="Maruti Suzuki Wagon R">
                     </div>
                     <div class="car-info">
                         <h3>Maruti Suzuki Wagon R</h3>
@@ -71,7 +72,7 @@
 
                 <div class="car-card pop-in" style="transition-delay: 0.7s;">
                     <div class="car-image">
-                        <div class="image-placeholder">Swift Image</div>
+                        <img src="assets/swift.png" alt="Maruti Suzuki Swift">
                     </div>
                     <div class="car-info">
                         <h3>Maruti Suzuki Swift</h3>
@@ -87,7 +88,7 @@
 
                 <div class="car-card pop-in" style="transition-delay: 0.8s;">
                     <div class="car-image">
-                        <div class="image-placeholder">Hycross Image</div>
+                        <img src="assets/hycross.png" alt="Innova Hycross">
                     </div>
                     <div class="car-info">
                         <h3>Innova Hycross (Hybrid)</h3>
@@ -103,7 +104,7 @@
 
                 <div class="car-card pop-in" style="transition-delay: 0.9s;">
                     <div class="car-image">
-                        <div class="image-placeholder">Brezza Image</div>
+                        <img src="assets/brezza.png" alt="Maruti Suzuki Brezza">
                     </div>
                     <div class="car-info">
                         <h3>Maruti Suzuki Brezza</h3>
@@ -116,12 +117,6 @@
                         <a href="brezza.html" class="btn-primary" style="margin-top: 15px;">View Details</a>
                     </div>
                 </div>
-
-                <!-- Dynamic Cars from Admin Panel -->
-                <div id="dynamic-featured-fleet"
-                    style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                </div>
-
             </div>
         </div>
     </section>
@@ -144,17 +139,17 @@
                     : `<div class="image-placeholder">Image Coming Soon</div>`;
 
                 card.innerHTML = `
-                    <div class="car-image">${imageHTML}</div>
-                    <div class="car-info">
-                        <h3>${car.name}</h3>
-                        <div class="price">₹${car.priceMo || '—'}<span>/mo</span></div>
-                        <ul class="features">
-                            <li>${car.category || 'Premium Vehicle'}</li>
-                            <li>${car.seats || '—'} Capacity</li>
-                            <li>${car.transmission || 'Available'}</li>
-                        </ul>
-                        <a href="car-detail.html?id=${car.id}" class="btn-primary" style="margin-top: 15px;">View Details</a>
-                    </div>`;
+                                    <div class="car-image">${imageHTML}</div>
+                                    <div class="car-info">
+                                        <h3>${car.name}</h3>
+                                        <div class="price">₹${car.priceMo || '—'}<span>/mo</span></div>
+                                        <ul class="features">
+                                            <li>${car.category || 'Premium Vehicle'}</li>
+                                            <li>${car.seats || '—'} Capacity</li>
+                                            <li>${car.transmission || 'Available'}</li>
+                                        </ul>
+                                        <a href="car-detail.html?id=${car.id}" class="btn-primary" style="margin-top: 15px;">View Details</a>
+                                    </div>`;
                 container.appendChild(card);
             });
         })();
@@ -194,6 +189,40 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- Floating Chat Widget -->
+    <button class="chat-widget-btn" onclick="toggleChat()">💬</button>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <h3>💬 Chat with Pablo</h3>
+            <span class="chat-close" onclick="toggleChat()">✖</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-msg received">Hi there! How can we help you with your car rental today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+    <script>
+        function toggleChat() {
+            document.getElementById('chatWindow').classList.toggle('active');
+        }
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            if (input.value.trim() === '') return;
+            const chatBody = document.getElementById('chatBody');
+            chatBody.innerHTML += '<div class="chat-msg sent">' + input.value + '</div>';
+            input.value = '';
+            setTimeout(() => {
+                chatBody.innerHTML += '<div class="chat-msg received">Thanks for your message. Our team will get back to you shortly! (Or login to dashboard to see history)</div>';
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 1000);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    </script>
+
 </body>
 
 </html>

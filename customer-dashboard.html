@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - Pablo's Car Rentals</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding-top: 100px; }
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: calc(100vh - 100px);
+        }
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px;
+        }
+        .sidebar a {
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.02);
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(14, 165, 233, 0.15);
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            padding: 30px;
+        }
+        .booking-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            margin-bottom: 15px;
+            align-items: center;
+            border: 1px solid var(--surface-border);
+            transition: var(--transition);
+        }
+        .booking-item:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            transform: translateX(5px);
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .status-completed { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .status-active { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
+        
+        .chat-history {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--surface-border);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+            .booking-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Pablo's Car Rentals</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html" class="btn-outline">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="sidebar glass-panel slide-up">
+            <h3 style="padding: 10px; margin:0 0 10px 0; border-bottom: 1px solid var(--surface-border);">My Account</h3>
+            <a href="#" class="active" onclick="switchTab(event, 'bookings')">🚗 My Bookings</a>
+            <a href="#" onclick="switchTab(event, 'chats')">💬 Chat History</a>
+            <a href="#" onclick="switchTab(event, 'profile')">👤 Profile Settings</a>
+        </div>
+        
+        <div class="main-content">
+            <div id="tab-bookings" class="card glass-panel fade-in">
+                <h2 style="text-align:left;">My Bookings</h2>
+                <div class="booking-item">
+                    <div>
+                        <h4 style="font-size: 1.2rem; margin-bottom: 5px;">Toyota Innova</h4>
+                        <p style="font-size: 0.95rem; color: var(--text-muted);">Oct 12, 2025 - Nov 12, 2025</p>
+                    </div>
+                    <div>
+                        <span class="status-badge status-completed">Completed</span>
+                    </div>
+                </div>
+                <div class="booking-item">
+                    <div>
+                        <h4 style="font-size: 1.2rem; margin-bottom: 5px;">Maruti Suzuki Fronx</h4>
+                        <p style="font-size: 0.95rem; color: var(--text-muted);">May 1, 2026 - May 30, 2026</p>
+                    </div>
+                    <div>
+                        <span class="status-badge status-active">Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-chats" class="card glass-panel fade-in" style="display:none;">
+                <h2 style="text-align:left;">Support Chat History</h2>
+                <div class="chat-history">
+                    <div class="chat-msg sent" style="align-self: flex-end; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); padding: 12px 18px; border-radius: 16px; border-bottom-right-radius: 4px; max-width: 80%;">Hi, I want to extend my Fronx rental by 5 days.</div>
+                    <div class="chat-msg received" style="align-self: flex-start; background: rgba(255,255,255,0.05); padding: 12px 18px; border-radius: 16px; border-bottom-left-radius: 4px; max-width: 80%;">Hello! Sure, we can extend it. The additional cost will be ₹5,000. Should I send the payment link?</div>
+                    <div class="chat-msg sent" style="align-self: flex-end; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); padding: 12px 18px; border-radius: 16px; border-bottom-right-radius: 4px; max-width: 80%;">Yes please.</div>
+                </div>
+                <div class="chat-input-area" style="padding:0; border:none; display: flex; gap:10px;">
+                    <input type="text" placeholder="Reply to admin..." style="flex:1; padding: 15px; border-radius: 12px; border: 1px solid var(--surface-border); background: rgba(0,0,0,0.4); color: white;">
+                    <button class="btn-primary" style="padding: 0 30px; border-radius: 12px;">Send</button>
+                </div>
+            </div>
+            
+            <div id="tab-profile" class="card glass-panel fade-in" style="display:none;">
+                <h2 style="text-align:left;">Profile Settings</h2>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" value="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" value="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" value="+91 9876543210">
+                </div>
+                <button class="btn-primary" style="margin-top: 15px;">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(event, tabId) {
+            event.preventDefault();
+            document.querySelectorAll('.main-content > div').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.sidebar a').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).style.display = 'block';
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
