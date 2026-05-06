@@ -22,7 +22,7 @@
             <li><a href="fleet.html">Our Fleet</a></li>
             <li><a href="oru network.html">Our Network</a></li>
             <li><a href="book.html" class="btn-primary">Book Now</a></li>
-            <li><a href="login.html" class="admin-badge btn-outline">Login</a></li>
+            <li><a href="#" onclick="showAdminLoginModal()" class="admin-badge btn-outline">Admin Login</a></li>
         </ul>
         <div class="hamburger">
             <span class="bar"></span>
@@ -286,7 +286,45 @@
             }, 1000);
             chatBody.scrollTop = chatBody.scrollHeight;
         }
+
+        // Admin Login Logic
+        function showAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.add('active');
+        }
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.remove('active');
+            document.getElementById('adminError').style.display = 'none';
+        }
+        function attemptAdminLogin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            if (user === 'admin' && pass === '1234567890') {
+                window.location.href = 'admin-panel.html';
+            } else {
+                document.getElementById('adminError').style.display = 'block';
+            }
+        }
     </script>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="chat-window" style="height:auto; top:50%; left:50%; transform:translate(-50%, -50%); bottom:auto; right:auto;">
+        <div class="chat-header">
+            <h3>🔒 Admin Access</h3>
+            <span class="chat-close" onclick="closeAdminLoginModal()">✖</span>
+        </div>
+        <div class="chat-body" style="padding: 20px;">
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px;">Username</label>
+                <input type="text" id="adminUser" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--surface-border); background:rgba(0,0,0,0.3); color:white; outline:none;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; margin-bottom:5px;">Password</label>
+                <input type="password" id="adminPass" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--surface-border); background:rgba(0,0,0,0.3); color:white; outline:none;">
+            </div>
+            <p id="adminError" style="color:#ef4444; font-size:0.9rem; margin-bottom:10px; display:none;">Incorrect username or password.</p>
+            <button class="btn-primary" style="width:100%;" onclick="attemptAdminLogin()">Login to Admin Panel</button>
+        </div>
+    </div>
 
 </body>
 
