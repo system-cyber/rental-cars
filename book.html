@@ -60,7 +60,8 @@
                                 <option value="" disabled selected>Choose a ride...</option>
                                 <optgroup label="Pablo's Fleet">
                                     <option value="Toyota Innova 2016">Toyota Innova 2016</option>
-                                    <option value="Toyota Innova 2005 (Type 4 Conversion)">Toyota Innova 2005 (Type 4 Conversion)</option>
+                                    <option value="Toyota Innova 2005 (Type 4 Conversion)">Toyota Innova 2005 (Type 4
+                                        Conversion)</option>
                                     <option value="Maruti Suzuki Baleno (Blue)">Maruti Suzuki Baleno (Blue)</option>
                                     <option value="Maruti Suzuki Baleno (White)">Maruti Suzuki Baleno (White)</option>
                                     <option value="Maruti Suzuki Fronx">Maruti Suzuki Fronx</option>
@@ -94,12 +95,14 @@
                         <input type="number" id="b_days" min="1" required placeholder="e.g. 3">
                     </div>
 
-                    <div id="price-summary" style="display: none; padding: 15px; background: rgba(249, 211, 66, 0.1); border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(249, 211, 66, 0.3);">
+                    <div id="price-summary"
+                        style="display: none; padding: 15px; background: rgba(249, 211, 66, 0.1); border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(249, 211, 66, 0.3);">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                             <span>Daily Rate:</span>
                             <strong id="dailyRateDisplay">₹0</strong>
                         </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; color: var(--primary-color);">
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 1.2rem; color: var(--primary-color);">
                             <span>Estimated Total:</span>
                             <strong id="totalAmountDisplay">₹0</strong>
                         </div>
@@ -250,7 +253,25 @@
             // Set the optional WhatsApp button link
             document.getElementById('whatsappDirect').href = whatsappURL;
 
-            // 3. SEND TO WEB3FORMS (Silent Submission)
+            // 3. SEND TO TELEGRAM BOT
+            // HOW TO USE: Replace the two strings below with your actual Token and Chat ID.
+            const telegramBotToken = "YOUR_TELEGRAM_BOT_TOKEN";
+            const telegramChatId = "YOUR_TELEGRAM_CHAT_ID";
+
+            if (telegramBotToken !== "YOUR_TELEGRAM_BOT_TOKEN") {
+                const tgMessage = `🚗 *New Booking Inquiry!*\n\n*Name:* ${name}\n*Mobile:* ${mobile}\n*Email:* ${email}\n*Vehicle:* ${requirement}\n*Dates:* ${pickupDate} to ${returnDate}\n*Days:* ${days}`;
+                fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        chat_id: telegramChatId,
+                        text: tgMessage,
+                        parse_mode: "Markdown"
+                    })
+                }).catch(err => console.error("Telegram Error:", err));
+            }
+
+            // 4. SEND TO WEB3FORMS (Silent Submission)
             const web3formsAccessKey = "896409f8-562e-4e50-970f-0adf93263b1c";
 
             fetch("https://api.web3forms.com/submit", {
